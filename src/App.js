@@ -1,25 +1,19 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { contactsOperations } from "redux/phonebook";
-import { contactsSelectors } from "redux/phonebook";
+import { useGetContactsQuery } from "services/phonebook-api-slice";
 
 import Section from "./components/Section/Section";
 import Contacts from "./components/Contacts/Contacts";
 import FormContacts from "./components/Form/Form";
 
 function App() {
-  const contacts = useSelector(contactsSelectors.getContacts);
-  const dispatch = useDispatch();
-
-  useEffect(() => dispatch(contactsOperations.getContacts()), [dispatch]);
+  const { data, error, isFetching } = useGetContactsQuery();
 
   return (
     <>
       <Section title="Phonebook">
-        <FormContacts />
+        <FormContacts contacts={data} />
       </Section>
 
-      {contacts.length > 0 && (
+      {data?.length > 0 && (
         <Section title="Contacts">
           <Contacts />
         </Section>

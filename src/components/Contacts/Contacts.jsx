@@ -1,6 +1,6 @@
-import { useSelector, useDispatch } from "react-redux";
-import { contactsOperations } from "redux/phonebook";
-import { contactsSelectors } from "redux/phonebook";
+import { useDeleteContactMutation } from "services/phonebook-api-slice";
+import { useGetContactsQuery } from "services/phonebook-api-slice";
+import { contactsSelectors } from "redux/phonebook/phonebook-selectors";
 
 import Filter from "../Filter/Filter";
 
@@ -10,19 +10,23 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { Skeleton } from "@material-ui/lab";
 
 const Contacts = () => {
-  const options = useSelector(contactsSelectors.getfilteredContacts);
-  const isLoading = useSelector(contactsSelectors.getLoading);
+  const { data, error, isFetching } = useGetContactsQuery();
 
-  const dispatch = useDispatch();
+  // const options = useSelector(contactsSelectors.getfilteredContacts);
+
+  const [
+    deleteContact, // This is the mutation trigger
+    { isLoading: isUpdating }, // This is the destructured mutation result
+  ] = useDeleteContactMutation();
 
   return (
     <>
       <Filter />
       <ul>
-        {options.map(({ id, name, number }) => {
+        {/* {options?.map(({ id, name, number }) => {
           return (
             <ContactItem key={id}>
-              {!isLoading ? (
+              {!isUpdating ? (
                 <>
                   <span style={{ width: 150 }}>{name}:</span>
                   <NumberText>{number}</NumberText>
@@ -30,9 +34,7 @@ const Contacts = () => {
                     startIcon={<DeleteIcon fontSize="small" />}
                     variant="outlined"
                     color="primary"
-                    onClick={() =>
-                      dispatch(contactsOperations.deleteContact(id))
-                    }
+                    onClick={() => deleteContact(id)}
                   >
                     Delete
                   </Button>
@@ -42,7 +44,7 @@ const Contacts = () => {
               )}
             </ContactItem>
           );
-        })}
+        })} */}
       </ul>
     </>
   );

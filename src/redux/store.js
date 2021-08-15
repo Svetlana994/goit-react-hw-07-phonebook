@@ -1,40 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
-import logger from "redux-logger";
-import {
-  // persistStore,
-  // persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
-//import storage from "redux-persist/lib/storage";
-import contactsReducer from "./phonebook/phonebook-reducers";
+import { contactsApi } from "services/phonebook-api-slice";
+import { createReducer } from "@reduxjs/toolkit";
+import { changeFilter } from "./phonebook/phonebook-actions";
 
-// const persistConfig = {
-//   key: "root",
-//   storage,
-//   blacklist: ["filter"],
-// };
-
-const store = configureStore({
-  reducer: {
-    //contacts: persistReducer(persistConfig, contactsReducer),
-    contacts: contactsReducer,
-  },
-  devTools: process.env.NODE_ENV !== "production",
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }).concat(logger),
+const filter = createReducer("", {
+  [changeFilter]: (_, { payload }) => payload,
 });
 
-// const persistor = persistStore(store);
-
-// export default { store, persistor };
-
-export default store;
+export const store = configureStore({
+  reducer: {
+    filter,
+    // Add the generated reducer as a specific top-level slice
+    [contactsApi.reducerPath]: contactsApi.reducer,
+  },
+  // Adding the api middleware enables caching, invalidation, polling,
+  // and other useful features of `rtk-query`.
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(contactsApi.middleware),
+});

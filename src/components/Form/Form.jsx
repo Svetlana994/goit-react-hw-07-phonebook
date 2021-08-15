@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { contactsSelectors } from "redux/phonebook";
-import { contactsOperations } from "redux/phonebook";
+import { useCreateContactMutation } from "services/phonebook-api-slice";
 
 import { WrapperForm, Container } from "./Form.styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
-function FormContacts() {
+function FormContacts({ contacts }) {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
 
-  const contacts = useSelector(contactsSelectors.getContacts);
-  const dispatch = useDispatch();
+  const [
+    createContact, // This is the mutation trigger
+    { isLoading: isUpdating }, // This is the destructured mutation result
+  ] = useCreateContactMutation();
 
   const handleInputChange = (event) => {
     const { name, value } = event.currentTarget;
@@ -42,7 +42,7 @@ function FormContacts() {
       return;
     }
 
-    dispatch(contactsOperations.addContact({ name, number }));
+    createContact({ name, number });
 
     resetForm();
   };
