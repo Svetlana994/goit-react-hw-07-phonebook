@@ -1,6 +1,11 @@
 import { useDeleteContactMutation } from "services/phonebook-api-slice";
 import { useGetContactsQuery } from "services/phonebook-api-slice";
-import { contactsSelectors } from "redux/phonebook/phonebook-selectors";
+import {
+  contactsSelectors,
+  getContacts,
+  getfilteredContacts,
+} from "redux/phonebook/phonebook-selectors";
+import { useSelector } from "react-redux";
 
 import Filter from "../Filter/Filter";
 
@@ -10,9 +15,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { Skeleton } from "@material-ui/lab";
 
 const Contacts = () => {
-  const { data, error, isFetching } = useGetContactsQuery();
-
-  // const options = useSelector(contactsSelectors.getfilteredContacts);
+  const options = useSelector(getfilteredContacts);
 
   const [
     deleteContact, // This is the mutation trigger
@@ -23,7 +26,7 @@ const Contacts = () => {
     <>
       <Filter />
       <ul>
-        {/* {options?.map(({ id, name, number }) => {
+        {options?.map(({ id, name, number }) => {
           return (
             <ContactItem key={id}>
               {!isUpdating ? (
@@ -44,7 +47,7 @@ const Contacts = () => {
               )}
             </ContactItem>
           );
-        })} */}
+        })}
       </ul>
     </>
   );

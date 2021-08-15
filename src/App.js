@@ -6,6 +6,7 @@ import FormContacts from "./components/Form/Form";
 
 function App() {
   const { data, error, isFetching } = useGetContactsQuery();
+  console.log(useGetContactsQuery());
 
   return (
     <>
